@@ -1,0 +1,119 @@
+<html>
+<head>
+<style>
+html, body { height: 100%; margin: 0; padding: 0; }
+#map {height: 600px;}
+</style>
+</head>
+
+<body>
+<div id="map"></div>
+<div>
+<button onClick="showAnimation()">Launch Rafale</button>
+</div>
+</body>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrSsqBTRlcwFi7DfAa-cZnM2kGda5C9AY&callback=initMap" async defer></script>
+
+<script>
+var map;
+var line;
+var ambalaLatlng;
+var parisLatlng
+function initMap() {
+ambalaLatlng = new google.maps.LatLng(30.384119, 76.762663);
+parisLatlng = new google.maps.LatLng(48.887742, 2.326459);
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 33.685752, lng: 48.276849}, 
+    zoom: 3,  
+    scrollwheel:  false,  
+    mapTypeControl: true, 
+    mapTypeControlOptions: {
+        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+        position: google.maps.ControlPosition.BOTTOM_CENTER
+    },
+    zoomControl: true, 
+    zoomControlOptions: {
+        position: google.maps.ControlPosition.LEFT_CENTER
+    },
+    streetViewControl: true, 
+    streetViewControlOptions: {
+        position: google.maps.ControlPosition.LEFT_TOP
+    }, 
+    fullscreenControl: true
+  });
+	var marker = new google.maps.Marker({
+		position: ambalaLatlng,
+		title:"Ambala"
+	});
+	var marker1 = new google.maps.Marker({
+		position: parisLatlng,
+		title:"Paris"
+	});
+
+	
+	marker.setMap(map);
+	marker1.setMap(map);
+	
+	 var lineSymbol = {
+		path: "M 0,-1 0,1",
+		strokeOpacity: 1,
+		scale: 4
+	  };
+	var pathLine = new google.maps.Polyline({
+		geodesic: true,
+		path: [
+		  parisLatlng,ambalaLatlng
+		],
+		strokeOpacity: 0,
+		icons: [
+		  {
+			icon: lineSymbol,
+			offset: "0",
+			repeat: "20px"
+		  }
+		],
+		
+	  });
+	  
+	   
+		pathLine.setMap(map);
+	
+}
+
+
+function showAnimation(){
+
+
+	line = new google.maps.Polyline({
+      geodesic: true,
+      path: [parisLatlng, ambalaLatlng],
+      icons: [{
+        icon: {
+         path: 'M362.985,430.724l-10.248,51.234l62.332,57.969l-3.293,26.145 l-71.345-23.599l-2.001,13.069l-2.057-13.529l-71.278,22.928l-5.762-23.984l64.097-59.271l-8.913-51.359l0.858-114.43 l-21.945-11.338l-189.358,88.76l-1.18-32.262l213.344-180.08l0.875-107.436l7.973-32.005l7.642-12.054l7.377-3.958l9.238,3.65 l6.367,14.925l7.369,30.363v106.375l211.592,182.082l-1.496,32.247l-188.479-90.61l-21.616,10.087l-0.094,115.684',
+		  scale: 0.0333,
+		  strokeOpacity: 1,
+		  color: 'black',
+		  strokeWeight: 1,
+		  anchor: new google.maps.Point(300, 300)
+        },
+
+        offset: '100%'
+      }]
+    }),
+
+    pct = 0,
+    timer = setInterval(function() {
+    
+      pct += .002;
+
+      line.setPath([parisLatlng, google.maps.geometry.spherical.interpolate(parisLatlng, ambalaLatlng, pct)]);
+      line.setMap(map);
+      map.setCenter(line.getPath().getAt(1));
+      if (pct >= 1) clearInterval(timer)
+    }, 50);
+
+	line.setMap(map);
+	}
+</script>
+</html>
